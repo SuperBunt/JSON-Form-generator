@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,6 +9,7 @@ using static FormBuilder.Program;
 
 namespace FormBuilder
 {
+    [JsonObject(NamingStrategyType = typeof(CamelCaseNamingStrategy))]
     public class Question
     {
         public string Key { get; set; }
@@ -15,7 +18,7 @@ namespace FormBuilder
         public string Placeholder { get; set; }
         public string Tip { get; set; }
         public string Value { get; set; }
-        public string Visible { get; set; }
+        public bool Visible { get; set; }
         public string Required { get; set; }
         public string Localizationkey { get; set; }
         public string placeholderLocalizationkey { get; set; }
@@ -32,58 +35,26 @@ namespace FormBuilder
             questions = new List<Question>();
             Key = Guid.NewGuid().ToString();
             ControlType = type;
+            Visible = true;
         }
     }
-    public abstract class ControlType
-    {
-        public abstract string controlType { get; } 
-    }
+    //public abstract class ControlType
+    //{
+    //    public abstract string ControlType { get; }
+    //}
 
-    public class Step : ControlType
+    public class Step : Question
     {
-        public override string controlType => "Step";
-        public string Key { get; set; }
-        public string Localizationkey { get; set; }
-        public string Label { get; set; }
-        public bool Visible { get; set; }
-        //public string controlType { get; set; }
-        public List<Question> Questions;
-
-        public Step()
-            : base()
+        public int Order { get; set; }
+        public Step(string type, int order)
+            : base(type)
         {
             Questions = new List<Question>();
             Key = Guid.NewGuid().ToString();
+            // Order = order;
+            Visible = true;
+            Order = order;
         }
-    }
-
-    public class Textbox : ControlType
-    {
-        public override string controlType => "Textbox";
-    
-    }
-    public class Textarea : ControlType
-    {
-        public override string controlType => "Textarea";
-        
-    }
-    public class Radio : ControlType
-    {
-        public override string controlType => "Radio";
-        //public Radio()
-        //    : base()
-        //{
-        //    Type = "Radio";
-        //}
-    }
-    public class Checkbox : ControlType
-    {
-        public override string controlType => "Checkbox";
-    }
-
-    public class SummaryForm : ControlType
-    {
-        public override string controlType => "summary-form";
     }
 
     public class Option
@@ -92,6 +63,69 @@ namespace FormBuilder
         public string LocalizationKey { get; set; }
         public string Value { get; set; }
     }
+
+    //public class Step : Question
+    //{
+    //    public Step(string type)
+    //        : base(type)
+    //    {
+    //        Questions = new List<Question>();
+    //        Key = Guid.NewGuid().ToString();
+    //        // Order = order;
+    //        Visible = true;
+    //    }
+
+    //    //public override string ControlType => "step";
+
+    //    public string Localizationkey { get; set; }
+    //    public int Order { get; set; }
+    //    public string Label { get; set; }
+    //    public bool Visible { get; set; }
+    //    public string Key { get; set; }
+
+    //    //public string controlType { get; set; }
+    //    public List<Question> Questions;
+
+
+    //}
+
+    //public class Textbox : ControlType
+    //{
+    //    public override string ControlType => "textbox";
+
+    //}
+    //public class Textarea : ControlType
+    //{
+    //    public override string ControlType => "textarea";
+
+    //    public override string Key { get ; set; }
+
+    //    public Textarea()
+    //    {
+    //        Key = Guid.NewGuid().ToString();
+    //    }
+
+    //}
+    //public class Radio : ControlType
+    //{
+    //    public override string ControlType => "radio";
+    //    //public Radio()
+    //    //    : base()
+    //    //{
+    //    //    Type = "Radio";
+    //    //}
+    //}
+    //public class Checkbox : ControlType
+    //{
+    //    public override string ControlType => "Checkbox";
+    //}
+
+    //public class SummaryForm : ControlType
+    //{
+    //    public override string ControlType => "summary-form";
+    //}
+
+
     //public class CheckboxList : ControlType
     //{
     //    public CheckboxList()

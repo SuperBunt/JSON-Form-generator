@@ -2,6 +2,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -52,8 +53,13 @@ namespace FormBuilder
             Console.WriteLine(jsonIgnoreNullValues);
 
             // TO DO: Export JSON to a file or open in text editor
+            string path = @"C:\Users\pec\source\repos\FormBuilder\FormBuilder\sample.json";
+            if (File.Exists(path))
+            {
+                File.WriteAllText(path, jsonIgnoreNullValues);
+            }
 
-            Console.ReadKey();
+            //Console.ReadKey();
         }
 
         [JsonObject(NamingStrategyType = typeof(CamelCaseNamingStrategy))]
@@ -100,27 +106,40 @@ namespace FormBuilder
             {
                 string s;
                 int numQuestions;
+                int numSections;
                 for (int i = 0; i < num; i++)
                 {
-                    Step toAdd = new Step();
-                    //List<Question> questions = new List<Question>();
-                    Console.WriteLine("How many questions in step {0}?", i+1);
+                    Step toAdd = new Step("step", i+1);
+                    toAdd.Label = string.Format("Tab {0}",i + 1); 
+                    Console.WriteLine("How many sections in step {0}?", i+1);
                     s = Console.ReadLine();
-                    numQuestions = Convert.ToInt16(s);
-                    for (int j = 0; j < numQuestions; j++)
+                    numSections = Convert.ToInt16(s);
+                    for (int k = 0; k < numSections; k++)
                     {
-                        // Add a question
-                        Console.WriteLine("question {0}.\tEnter control type?",j+1);
+                        Console.WriteLine("Enter section label:");
                         s = Console.ReadLine();
-                        Question question = new Question(s);
-                        question.Localizationkey = "";
-                        question.RegSysKey = "";
-                        question.RegSysType = "";
-                        //questions.Add(question);
-                        toAdd.Questions.Add(question);
-                    }                    
-                    toAdd.Key = Guid.NewGuid().ToString();
-                    toAdd.Visible = true;
+                        Question detailsSection = new Question("section");
+                        detailsSection.Label = s;
+                        toAdd.Questions.Add(detailsSection);
+                        //Question section = new Question(s);
+                        //Console.WriteLine("-{0}- How many questions in section {1}?",s, k + 1);
+                        //s = Console.ReadLine();
+                        //numQuestions = Convert.ToInt16(s);
+                        //for (int j = 0; j < numQuestions; j++)
+                        //{
+                        //    // Add a question
+                        //    Console.WriteLine("question {0}. Enter control type?", j + 1);
+                        //    s = Console.ReadLine();
+                        //    Question question = new Question(s);
+                        //    question.Localizationkey = "";
+                        //    question.RegSysKey = "";
+                        //    question.RegSysType = "";
+                        //    //questions.Add(question);
+                        //    toAdd.Questions.Add(question);
+                        //}
+                    }                                     
+                    //toAdd.Key = Guid.NewGuid().ToString();
+                    //toAdd.Visible = true;
                     steps.Add(toAdd);
                 }                
             }
@@ -129,7 +148,7 @@ namespace FormBuilder
             {
                 for (int i = 0; i < num; i++)
                 {
-                    Step toAdd = new Step();
+                    Step toAdd = new Step("summary", i+1);
                     summarySteps.Add(toAdd);
                 }
             }
