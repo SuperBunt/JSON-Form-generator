@@ -1,105 +1,136 @@
 {
-  "version": "1.1.0",
-  "displayName": "Application to Register an Industrial and Provident Society",
+  "version": "1.0",
+  "displayName": "Submission Form",
   "submissionDetails": {
-    "SubmissionRegisterEdits": [
-      {
-        "Key": "c158a575-1e70-4fe8-89c4-8e7103ba75c0",
-        "Name": "Add Entity",
-        "RegisterEditId": 1
-      },
-      {
-        "Key": "d3e02296-3896-4e98-b5bd-a72d141979e1",
-        "Name": "Add Related Entity",
-        "RegisterEditId": 2
-      },
-      {
-        "Key": "b87e4337-eb18-42f7-b57f-053829cdfda4",
-        "Name": "Add Entity Attributes",
-        "RegisterEditId": 33
-      },
-      {
-        "Key": "31f0f445-d988-44d9-bfa5-f494038c8b42",
-        "Name": "Update Entity Return Data",
-        "RegisterEditId": 35
-      }
-    ],
-    "SubmissionTypeId": "1076",
-    "SubmissionTypeDesc": "Application to register an I. P. society (Affiliated)",
-    "RelatedRegisterId": "1003"
+    "SubmissionRegisterEdits": [],
+    "SubmissionTypeId": "55",
+    "SubmissionTypeDesc": "regfuigh",
+    "RelatedRegisterId": "1"
   },
   "steps": [
     {
       "order": 1,
-      "key": "a66c7340-bcb5-4a7d-8d30-5889f6d0558e",
+      "key": "e5fc26e8-4980-4bec-b50a-3d19f42544c5",
       "controlType": "step",
-      "label": "Tab 1",
+      "label": "tab 1",
       "visible": true,
+      "required": false,
       "questions": [
         {
-          "key": "6bdbbf5e-465f-4e79-b43a-75f0079be193",
+          "key": "a4da23be-ea6e-4011-80e0-e818921e5df5",
           "controlType": "section",
-          "label": "Society Details",
+          "label": "Edit Section label",
           "visible": true,
-          "questions": []
+          "required": false,
+          "questions": [
+            {
+              "key": "cda82d48-9daa-4fb5-a146-050781c9533b",
+              "controlType": "textarea",
+              "label": "Edit Label",
+              "visible": true,
+              "required": false
+            },
+            {
+              "key": "0d92d0d8-c030-47e8-a6d8-71fee95cc3d3",
+              "controlType": "textarea",
+              "label": "Edit Label",
+              "visible": true,
+              "required": false
+            }
+          ]
         },
         {
-          "key": "e77592c5-5bd3-4943-8d93-b414b8d25f05",
+          "key": "d61ab4d8-b440-4f07-8d9f-d9e8b9264180",
           "controlType": "section",
-          "label": "Society Address",
+          "label": "Edit Section label",
           "visible": true,
-          "questions": []
+          "required": false,
+          "questions": [
+            {
+              "key": "ddf25235-3af6-4eb5-a938-de2de4b6c287",
+              "controlType": "textarea",
+              "label": "Edit Label",
+              "visible": true,
+              "required": false
+            },
+            {
+              "key": "a115e12e-1b7a-4d4b-8f93-b7b93def5186",
+              "controlType": "textarea",
+              "label": "Edit Label",
+              "visible": true,
+              "required": false
+            },
+            {
+              "key": "922d8959-71d3-4d7b-af5f-f87014862796",
+              "controlType": "textarea",
+              "label": "Edit Label",
+              "visible": true,
+              "required": false
+            }
+          ]
         }
       ]
     },
     {
       "order": 2,
-      "key": "63ba2388-b200-4f16-918f-beda577155d1",
+      "key": "0a335cd6-0e9f-4fc7-9c7f-71a72edbf629",
       "controlType": "step",
-      "label": "Tab 2",
+      "label": "tab2",
       "visible": true,
+      "required": false,
       "questions": [
         {
-          "key": "7a6c2f1f-56af-4122-a3c9-96a9b669f224",
+          "key": "744c08ac-b84e-4e07-93e9-3bd89bcb8f4b",
           "controlType": "section",
-          "label": "Society Rules",
+          "label": "Edit Section label",
           "visible": true,
-          "questions": []
+          "required": false,
+          "questions": [
+            {
+              "key": "2ec4ce75-4778-4226-8e0b-c0465114d685",
+              "controlType": "textarea",
+              "label": "Edit Label",
+              "visible": true,
+              "required": false
+            },
+            {
+              "key": "b5eb6cda-6eb9-4a81-98c3-fa13e65ac056",
+              "controlType": "textarea",
+              "label": "Edit Label",
+              "visible": true,
+              "required": false
+            },
+            {
+              "key": "e07633d4-b7e0-4321-89cf-5b81d60246b4",
+              "controlType": "textarea",
+              "label": "Edit Label",
+              "visible": true,
+              "required": false
+            },
+            {
+              "key": "48f33b64-e425-48b2-913f-9160591c2b05",
+              "controlType": "textarea",
+              "label": "Edit Label",
+              "visible": true,
+              "required": false
+            },
+            {
+              "key": "3fea7253-6d7e-4043-ace5-0a8afb023ca0",
+              "controlType": "textarea",
+              "label": "Edit Label",
+              "visible": true,
+              "required": false
+            },
+            {
+              "key": "336281d8-d97d-42a9-9795-485ea477cc99",
+              "controlType": "textarea",
+              "label": "Edit Label",
+              "visible": true,
+              "required": false
+            }
+          ]
         }
       ]
-    },
-    {
-      "order": 3,
-      "key": "e857d926-95f6-448e-90fe-2298c8ffb120",
-      "controlType": "step",
-      "label": "Tab 3",
-      "visible": true,
-      "questions": [
-        {
-          "key": "ce3e19c6-6ac4-4b69-a810-7bb36f22aa15",
-          "controlType": "section",
-          "label": "Attachments",
-          "visible": true,
-          "questions": []
-        }
-      ]
-    },
-    {
-      "order": 4,
-      "key": "45712500-77a6-48ea-b964-57c92312bfee",
-      "controlType": "step",
-      "label": "Tab 4",
-      "visible": true,
-      "questions": []
-    },
-    {
-      "order": 5,
-      "key": "bb642660-0205-47c6-8f38-88ae2c9e0c39",
-      "controlType": "step",
-      "label": "Tab 5",
-      "visible": true,
-      "questions": []
     }
-  ],
-  "summarySteps": []
+  ]
 }

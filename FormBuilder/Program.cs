@@ -1,10 +1,13 @@
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Schema;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace FormBuilder
@@ -13,7 +16,10 @@ namespace FormBuilder
     {
         static void Main(string[] args)
         {
+            
             Form myForm = new Form();
+
+            //myForm.SearchForDuplicateGuids();
             Console.WriteLine("Form Builder");
             Console.WriteLine("Enter version:\t");
             myForm.Version = Console.ReadLine();
@@ -35,22 +41,20 @@ namespace FormBuilder
             myForm.CreateRegEdits(val);
 
             Console.WriteLine("---------- Steps ------------------");
-            Console.WriteLine("Enter num of steps");
+            Console.WriteLine("Enter num of tabs");
             num = Console.ReadLine();
             val = Convert.ToInt16(num);
             myForm.CreateSteps(val);
             
-            Console.WriteLine("---------- Summary Steps ------------------");
-            Console.WriteLine("Enter num of summary steps");
-            num = Console.ReadLine();
-            val = Convert.ToInt16(num);
-            myForm.CreateSummarySteps(val);
+
 
             string jsonIgnoreNullValues = JsonConvert.SerializeObject(myForm, Formatting.Indented, new JsonSerializerSettings
             {
                 NullValueHandling = NullValueHandling.Ignore
             });
             Console.WriteLine(jsonIgnoreNullValues);
+
+
 
             // TO DO: Export JSON to a file or open in text editor
             string path = @"C:\Users\pec\source\repos\FormBuilder\FormBuilder\sample.json";
@@ -75,14 +79,11 @@ namespace FormBuilder
             // progressLinks
             [JsonProperty(Order = 3)]
             public List<Step> steps;
-            [JsonProperty(Order = 4)]
-            public List<Step> summarySteps;
             [JsonIgnore]
             public int NumSubmissionRegEdits { get; set; }
             public Form()
             {
                 steps = new List<Step>();
-                summarySteps = new List<Step>();
             }
 
             public void CreateRegEdits(int NumSubmissionRegEdits)
@@ -102,60 +103,79 @@ namespace FormBuilder
                 }
             }
 
+            public void SearchForDuplicateGuids()
+            {
+                string path = @"C:\Users\pec\source\repos\FormBuilder\FormBuilder\sample.json";
+                string jsonText;
+                using (StreamReader r = new StreamReader(path))
+                {
+                    jsonText = r.ReadToEnd();
+                }
+
+
+                var guids = Regex.Matches(jsonText, @"(\{){0,1}(?<![\@]{1})([0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1})")
+                    .Cast<Match>()
+                    .Select(m => m.Value)
+                    .ToList();  //Match all substrings in guids
+
+                Console.WriteLine("count of guids: {0}", guids.Count());
+
+                var duplicates = guids.GroupBy(x => x).Where(g => g.Count() > 1).SelectMany(r => r).Distinct();
+
+                Console.WriteLine("count of duplicates: {0}", duplicates.Count());
+
+                if (duplicates.Count() > 0)
+                {
+                    foreach (var item in duplicates)
+                    {
+                        Console.WriteLine(item);
+                    }
+                }
+                else
+                    Console.WriteLine("No Duplicates.");
+
+            }
+
             public void CreateSteps(int num)
             {
                 string s;
-                int numQuestions;
                 int numSections;
+                short numQuestions;
                 for (int i = 0; i < num; i++)
                 {
-                    Step toAdd = new Step("step", i+1);
-                    toAdd.Label = string.Format("Tab {0}",i + 1); 
-                    Console.WriteLine("How many sections in step {0}?", i+1);
+                    Step tab = new Step(i + 1);
+                    Console.WriteLine("Enter tab label:");
                     s = Console.ReadLine();
-                    numSections = Convert.ToInt16(s);
-                    for (int k = 0; k < numSections; k++)
-                    {
-                        Console.WriteLine("Enter section label:");
-                        s = Console.ReadLine();
-                        Question detailsSection = new Question("section");
-                        detailsSection.Label = s;
-                        toAdd.Questions.Add(detailsSection);
-                        //Question section = new Question(s);
-                        //Console.WriteLine("-{0}- How many questions in section {1}?",s, k + 1);
-                        //s = Console.ReadLine();
-                        //numQuestions = Convert.ToInt16(s);
-                        //for (int j = 0; j < numQuestions; j++)
-                        //{
-                        //    // Add a question
-                        //    Console.WriteLine("question {0}. Enter control type?", j + 1);
-                        //    s = Console.ReadLine();
-                        //    Question question = new Question(s);
-                        //    question.Localizationkey = "";
-                        //    question.RegSysKey = "";
-                        //    question.RegSysType = "";
-                        //    //questions.Add(question);
-                        //    toAdd.Questions.Add(question);
-                        //}
-                    }                                     
-                    //toAdd.Key = Guid.NewGuid().ToString();
-                    //toAdd.Visible = true;
-                    steps.Add(toAdd);
-                }                
-            }
 
-            public void CreateSummarySteps(int num)
-            {
-                for (int i = 0; i < num; i++)
-                {
-                    Step toAdd = new Step("summary", i+1);
-                    summarySteps.Add(toAdd);
+                    tab.Label = s;
+                    if (s.Equals("Details"))
+                    {
+                        tab.AddDetailsSection();
+                        tab.AddAddressSection();
+                    }
+                    else
+                    {
+                        Console.WriteLine("How many sections in tab {0}?", i + 1);
+                        s = Console.ReadLine();
+                        numSections = Convert.ToInt16(s);
+                        for (int k = 0; k < numSections; k++)
+                        {
+                            Section section = new Section();
+                            tab.Questions.Add(section);
+                            Console.WriteLine("How many question in section {0}?", k + 1);
+                            s = Console.ReadLine();
+                            numQuestions = Convert.ToInt16(s);
+                            section.AddQuestionsToSection(numQuestions);
+                        }
+                    }
+                    steps.Add(tab);
                 }
             }
 
+
             public override string ToString()
             {
-                return string.Format("{0}, Type id = {1}",DisplayName,SubmissionDetails.SubmissionTypeId);
+                return string.Format("{0}, Type id = {1}", DisplayName, SubmissionDetails.SubmissionTypeId);
             }
         }
 
@@ -168,74 +188,11 @@ namespace FormBuilder
 
             public SubmissionDetails()
             {
-                SubmissionRegisterEdits = new List<SubmissionRegisterEdit>();          
+                SubmissionRegisterEdits = new List<SubmissionRegisterEdit>();
             }
-
-            //public void CreateRegEdits(int NumSubmissionRegEdits)
-            //{
-            //    string number, name;
-            //    int num;
-            //    for (int i = 0; i < NumSubmissionRegEdits; i++)
-            //    {
-            //        // Generate regSysKey, name, registyereEditId
-            //        Console.WriteLine("RegEdit {0}.\tEnter regedit name?", i + 1);
-            //        name = Console.ReadLine();
-            //        Console.WriteLine("Enter registerEditId:");
-            //        number = Console.ReadLine();
-            //        num = Convert.ToInt16(number);
-            //        SubmissionRegisterEdit SubRegEdit = new SubmissionRegisterEdit(num, name);
-            //        SubmissionRegisterEdits.Add(SubRegEdit);
-            //    }
-            //}
-
         }
 
-        //public class CommonStep
-        //{
-        //    public string key { get; set; }
-        //    public string Localizationkey { get; set; }
-        //    public string Label { get; set; }
-        //    public string ControlType { get; set; }
-        //    public List<Question> Questions { get; set; }
 
-        //    public CommonStep()
-        //    {
-        //        Questions = new List<Question>();
-        //    }
-        //}
-        //public class Step : CommonStep
-        //{
-        //    public int Order { get; set; }
-        //    public bool Visible { get; set; }
-        //}
-
-        
-
-        //public class StepQuestion : Question
-        //{
-        //    public string Label { get; set; }
-        //    public string LocalizationKey { get; set; }
-        //    public int? Order { get; set; }
-        //    public bool? Visible { get; set; }
-
-        //    //public List<StepSubQuestion> Questions;
-
-        //    public void AddQuestions(int num)
-        //    {
-        //        StepSubQuestion toAdd = new StepSubQuestion();
-                
-        //    }
-
-        //}
-
-        //public class SummaryStep : CommonStep
-        //{
-        //    public string Label { get; set; }
-        //    public string LocalizationKey { get; set; }
-        //    public bool? Visible { get; set; }
-        //}
-
-        
 
         public class SubmissionRegisterEdit
         {
@@ -251,19 +208,5 @@ namespace FormBuilder
             }
         }
 
-        //public class StepSubQuestion
-        //{
-        //    public string Key { get; set; }
-        //    public ControlType ControlType { get; set; }
-        //    public string RegSysKey { get; set; }
-        //    public string RegSysType { get; set; }
-        //}
-
-        //public class SummaryQuestion : Question
-        //{
-        //    public string Label { get; set; }
-        //    public bool Visible { get; set; }
-
-        //}
     }
 }
